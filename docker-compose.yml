@@ -1,0 +1,61 @@
+# ── Inventory & Order Management — full stack ───────────────────────────────
+# Services: PostgreSQL (db) → FastAPI (backend) → React/nginx (frontend).
+# Credentials come from the environment / .env file — nothing secret is baked
+# into images. Defaults below are DEV-ONLY conveniences; override them in .env
+# (or your platform's dashboard) for anything real.
+#
+#   cp .env.example .env   &&   docker compose up --build
+#   Frontend → http://localhost:8080      Backend/docs → http://localhost:8000/docs
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: inventory_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-inventory}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-inventory_dev_pw}
+      POSTGRES_DB: ${POSTGRES_DB:-inventory}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-inventory} -d ${POSTGRES_DB:-inventory}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  backend:
+    build:
+      context: ./backend
+    image: inventory-backend:latest
+    container_name: inventory_backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-inventory}:${POSTGRES_PASSWORD:-inventory_dev_pw}@db:5432/${POSTGRES_DB:-inventory}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      LOW_STOCK_THRESHOLD: ${LOW_STOCK_THRESHOLD:-10}
+      SEED_DATA: ${SEED_DATA:-true}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Relative base URL — nginx proxies "/api" to the backend service.
+        VITE_API_BASE_URL: /api
+    image: inventory-frontend:latest
+    container_name: inventory_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+
+volumes:
+  pgdata:
+    name: inventory_pgdata
