@@ -1,11 +1,6 @@
-# ── Inventory & Order Management — full stack ───────────────────────────────
-# Services: PostgreSQL (db) → FastAPI (backend) → React/nginx (frontend).
-# Credentials come from the environment / .env file — nothing secret is baked
-# into images. Defaults below are DEV-ONLY conveniences; override them in .env
-# (or your platform's dashboard) for anything real.
-#
-#   cp .env.example .env   &&   docker compose up --build
-#   Frontend → http://localhost:8080      Backend/docs → http://localhost:8000/docs
+# Full stack: PostgreSQL, FastAPI backend, React/nginx frontend.
+# Config comes from .env (see .env.example); nothing secret is baked into images.
+#   cp .env.example .env && docker compose up --build
 
 services:
   db:

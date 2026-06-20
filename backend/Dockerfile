@@ -1,5 +1,4 @@
-# ── Production backend image ────────────────────────────────────────────────
-# Slim, single-stage build. Runs Uvicorn as a non-root user.
+# Slim single-stage image; runs Uvicorn as a non-root user.
 FROM python:3.12-slim AS base
 
 # Keep Python lean and predictable inside containers.
@@ -15,7 +14,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends libpq5 curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python deps first to leverage Docker layer caching.
+# Install deps first so this layer caches when only app code changes.
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

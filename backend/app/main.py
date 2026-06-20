@@ -33,10 +33,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description=(
-        "Production-ready Inventory & Order Management System API. "
-        "Manage products, customers and orders with automatic stock tracking."
-    ),
+    description="Manage products, customers and orders with automatic stock tracking.",
     lifespan=lifespan,
 )
 

@@ -1,4 +1,4 @@
-# ── Stage 1: build the React app ────────────────────────────────────────────
+# Stage 1: build the React app
 FROM node:20-alpine AS build
 
 WORKDIR /app
@@ -16,7 +16,7 @@ ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 COPY . .
 RUN npm run build
 
-# ── Stage 2: serve with nginx ───────────────────────────────────────────────
+# Stage 2: serve with nginx
 FROM nginx:1.27-alpine AS runtime
 
 # Replace the default site config with our SPA + API-proxy config.

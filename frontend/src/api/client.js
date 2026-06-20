@@ -37,7 +37,7 @@ export function extractErrorMessage(error, fallback = 'Something went wrong. Ple
   return error?.message || fallback
 }
 
-// ── Products ──────────────────────────────────────────────────────────────
+// Products
 export const ProductsAPI = {
   list: (params) => api.get('/products', { params }).then((r) => r.data),
   get: (id) => api.get(`/products/${id}`).then((r) => r.data),
@@ -46,7 +46,7 @@ export const ProductsAPI = {
   remove: (id) => api.delete(`/products/${id}`).then((r) => r.data),
 }
 
-// ── Customers ─────────────────────────────────────────────────────────────
+// Customers
 export const CustomersAPI = {
   list: (params) => api.get('/customers', { params }).then((r) => r.data),
   get: (id) => api.get(`/customers/${id}`).then((r) => r.data),
@@ -54,7 +54,7 @@ export const CustomersAPI = {
   remove: (id) => api.delete(`/customers/${id}`).then((r) => r.data),
 }
 
-// ── Orders ────────────────────────────────────────────────────────────────
+// Orders
 export const OrdersAPI = {
   list: () => api.get('/orders').then((r) => r.data),
   get: (id) => api.get(`/orders/${id}`).then((r) => r.data),
@@ -62,7 +62,7 @@ export const OrdersAPI = {
   remove: (id) => api.delete(`/orders/${id}`).then((r) => r.data),
 }
 
-// ── Dashboard ─────────────────────────────────────────────────────────────
+// Dashboard
 export const DashboardAPI = {
   get: () => api.get('/dashboard').then((r) => r.data),
 }
