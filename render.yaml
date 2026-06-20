@@ -1,13 +1,7 @@
-# Render Blueprint — provisions the backend (Docker) + a managed PostgreSQL.
-# Deploy: push to GitHub, then in Render → "New +" → "Blueprint" → pick this repo.
-# Render injects DATABASE_URL from the database automatically; the backend
-# normalizes the `postgres://` scheme it provides.
-databases:
-  - name: inventory-db
-    databaseName: inventory
-    user: inventory
-    plan: free
-
+# Render Blueprint — backend web service only (Docker).
+# The database is hosted on Neon. Set DATABASE_URL in the Render dashboard to
+# your Neon connection string; it's marked `sync: false` so it stays out of the
+# repo. The backend normalizes the postgres:// scheme automatically.
 services:
   - type: web
     name: inventory-backend
@@ -18,9 +12,7 @@ services:
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: inventory-db
-          property: connectionString
+        sync: false
       - key: CORS_ORIGINS
         # After deploying the frontend, set this to its URL, e.g.
         # https://your-app.vercel.app  (then redeploy).

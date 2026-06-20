@@ -127,8 +127,11 @@ The frontend calls a relative `/api` path that nginx (Docker) and Vite (dev)
 proxy to the backend, so there are no CORS issues in those setups. For a split
 deploy, set `VITE_API_BASE_URL` to the backend's full URL at build time.
 
-- Backend: `render.yaml` is a Render blueprint that provisions the API and a
-  managed Postgres and wires up `DATABASE_URL`. Configs for Railway
+- Database: any Postgres works. This setup uses a free [Neon](https://neon.tech)
+  database — create one and copy its connection string.
+- Backend: deploy with the `render.yaml` blueprint on Render, and set
+  `DATABASE_URL` to the Neon connection string in the dashboard (it's
+  `sync: false`, so it isn't stored in the repo). Configs for Railway
   (`backend/railway.json`) and Fly.io (`backend/fly.toml`) are also included.
 - Frontend: deploy `frontend/` to Vercel or Netlify (`vercel.json` /
   `netlify.toml` handle the build and SPA routing) and set `VITE_API_BASE_URL`

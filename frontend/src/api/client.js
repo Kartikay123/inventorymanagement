@@ -11,6 +11,22 @@ const api = axios.create({
   timeout: 20000,
 })
 
+// If VITE_API_BASE_URL isn't pointed at the backend (e.g. on a Vercel/Netlify
+// deploy), requests fall back to "/api" on the SPA host and the platform's
+// catch-all returns index.html with a 200. Detect that and surface a clear
+// message instead of letting components crash trying to read JSON off HTML.
+api.interceptors.response.use((response) => {
+  const contentType = response.headers?.['content-type'] || ''
+  const looksLikeHtml =
+    typeof response.data === 'string' && response.data.trimStart().startsWith('<')
+  if (contentType.includes('text/html') || looksLikeHtml) {
+    return Promise.reject(
+      new Error('API returned HTML, not JSON — set VITE_API_BASE_URL to your backend URL.'),
+    )
+  }
+  return response
+})
+
 /**
  * Turn any axios/backend error into a single human-readable string so the UI
  * can show one consistent, friendly message.
